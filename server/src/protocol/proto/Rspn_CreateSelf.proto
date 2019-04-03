@@ -1,0 +1,10 @@
+syntax="proto2";
+import "PlayerInfo.proto";
+package msg;
+
+message Rspn_CreateSelf {
+	required PlayerInfo Player = 1;
+
+}
+ 
+ 

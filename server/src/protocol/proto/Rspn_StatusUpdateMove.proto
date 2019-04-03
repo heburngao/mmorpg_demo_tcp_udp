@@ -1,0 +1,11 @@
+syntax="proto2";
+import "PlayerInfo.proto";
+package msg;
+
+
+message Rspn_StatusUpdateMove {
+	repeated PlayerInfo Player = 1;
+}
+ 
+
+ 

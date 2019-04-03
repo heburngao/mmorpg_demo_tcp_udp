@@ -1,0 +1,56 @@
+syntax="proto2";
+package msg;
+
+message StatusInfo{
+	required string Userid = 1;
+	optional Vect3 Pos = 2;
+	optional State Status = 3[default=NONE];
+	optional int32 MoveSpeed = 4;
+	optional Vect3 Dir = 5;
+
+	//required int64 FrameIndex = 4;
+	
+	//optional Vect2 SpawnPos = 4;
+}
+
+message PlayerInfo{
+	required string Userid = 1;
+	optional string Nickname = 2; 
+	optional Vect3 Pos = 3;
+	optional int32 Level = 4;
+	optional State Status = 5[default=NONE];
+	optional Vect3 Dir = 6;
+	
+	//optional int32 FrameIndex = 5;
+	//optional Vect2 SpawnPos = 6;
+	
+}
+
+//message Vect2 {
+//	required float X = 1;
+//	required float Y = 2;
+//}
+message Vect3 {
+	required int32 X = 1;
+	required int32 Y = 2;
+	required int32 Z = 3;
+}
+enum State {
+	NONE = 0;
+	IDLE = 1;
+	WALK = 2;
+	RUN = 3;
+	JUMP = 4;
+	FLY = 5;
+
+	SWIM = 7;
+
+	ATTACK = 8;
+	HURT = 9;
+	SKILL = 10;
+	DIE = 11;
+	LINEOFF = 12;
+	SPRINT = 13;
+	ROTATE = 14;
+	SWIM_IDLE = 15;
+}

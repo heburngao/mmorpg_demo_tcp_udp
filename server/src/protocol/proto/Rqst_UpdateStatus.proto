@@ -1,0 +1,11 @@
+syntax="proto2";
+import "PlayerInfo.proto";
+package msg;
+
+ 
+ 
+message Rqst_UpdateStatus {
+	required StatusInfo Info = 1;
+
+}
+ 

@@ -1,0 +1,11 @@
+syntax="proto2";
+//import "PlayerInfo.proto";
+package msg;
+ 
+message Rqst_HeartBeating {
+	required int32 Status = 1[default=0];
+	//optional PlayerInfo Player = 2;
+
+}
+ 
+

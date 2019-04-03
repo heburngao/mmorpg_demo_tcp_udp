@@ -1,0 +1,12 @@
+syntax="proto2";
+//import "PlayerInfo.proto";
+package msg;
+
+ 
+ 
+message Rqst_UpdateStatus_Confirm {
+	required int64 FrameID = 1;
+	required string UserID = 2;
+
+}
+ 
