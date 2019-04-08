@@ -66,7 +66,7 @@ namespace ghbc.Net
 					queue_LogError.Enqueue ("len_rcv < i+HeaderLen+BufferLen break");
 					break;
 				}
-				byte[] buf_header_words = CopyToBigEndianBytes(buffer,i,HeaderLen,0,false);//DB无需转为BigEndian
+				byte[] buf_header_words = CopyToBigEndianBytes(buffer,i,HeaderLen,false);//DB无需转为BigEndian
 				 
 				 queue_LogError.Enqueue ("=====解包=======");
 				if(System.Text.Encoding.UTF8.GetString(buf_header_words) == HeadWords){ //无需转为BigEndian
@@ -83,7 +83,7 @@ namespace ghbc.Net
 						// PR("[TCP] break b " , len_rcv, totoal_msg_len , i, HeaderLen , BufferLen)
 						break;
 					}
-					byte[] buf_cmd_ret_payload = CopyToBigEndianBytes(buffer,i+HeaderLen+BufferLen ,DB_ttsize_cmd_ret_payload - HeaderLen - BufferLen , 0 , false);
+					byte[] buf_cmd_ret_payload = CopyToBigEndianBytes(buffer,i+HeaderLen+BufferLen ,DB_ttsize_cmd_ret_payload - HeaderLen - BufferLen , false);
 			 
 					 
 					//================================
@@ -94,7 +94,7 @@ namespace ghbc.Net
 														var ret_byte = CopyToBigEndianBytes(buf_cmd_ret_payload,CMDLen,RETLen);
 								short ret = BitConverter.ToInt16(ret_byte,0);//ReadBuffer.readUshort ();
 								//payloads由protobuffer编码而成，所以不需要转为BigEndian
-														byte[] payloads = CopyToBigEndianBytes(buf_cmd_ret_payload,CMDLen + RETLen,buf_cmd_ret_payload.Length - CMDLen - RETLen, 0 ,false);
+														byte[] payloads = CopyToBigEndianBytes(buf_cmd_ret_payload,CMDLen + RETLen,buf_cmd_ret_payload.Length - CMDLen - RETLen ,false);
 								 
 								queue_LogError.Enqueue("<color=yellow>登陆后的处理</color>");
 
@@ -609,7 +609,7 @@ namespace ghbc.Net
 				queue_LogError.Enqueue ("Error --x--- KeepAlive :: " + e.Message);
 			}
 		}
-		private int copy_to_index = 0;
+		private int copy_from_index = 0;
 		//============================================
 		//		  byte[] buffer = new byte[4096];
 		//  byte[] bufCache = null;
@@ -641,7 +641,7 @@ namespace ghbc.Net
 					// bytesReadLen = CombineBuffer.GetRealReadBuf (bytesReadLen);
 					// byte[] real = CombineBuffer.CombinedBuff;
 
-						byte[] real = CopyToBigEndianBytes(this.buffer,0,bytesReadLen, copy_to_index ,false);
+						byte[] real = CopyToBigEndianBytes(this.buffer,copy_from_index,bytesReadLen ,false);
 						// foreach(var item in real ){
 						// 	queue_LogError.Enqueue("rcv: " + item);	
 						// }
@@ -652,7 +652,7 @@ namespace ghbc.Net
 					if (OnSocketDataArrival != null) {
 						queue_LogError.Enqueue("解包");
 						real = OnSocketDataArrival (real);
-						copy_to_index = real.Length;
+						copy_from_index = real.Length;
 					}else{
 						queue_LogError.Enqueue("无解包器");
 					}
@@ -901,7 +901,7 @@ namespace ghbc.Net
 		//end func
 
 		//autoConvertToBigEndian : true  对字节码做反转，转为BigEndian ,因为网络字节序都是BigEndian
-		public static byte[] CopyToBigEndianBytes(byte[] sourceBytes , int sourceStartIndex , int len , int copytoindex = 0, bool autoConvertToBigEndian = true){
+		public static byte[] CopyToBigEndianBytes(byte[] sourceBytes , int sourceStartIndex , int len , bool autoConvertToBigEndian = true){
 			var byte__ = new byte[len];
 			Array.Copy(sourceBytes,sourceStartIndex,byte__,0,len);
 			if(BitConverter.IsLittleEndian && autoConvertToBigEndian){

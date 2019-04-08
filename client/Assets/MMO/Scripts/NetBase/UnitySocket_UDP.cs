@@ -68,7 +68,7 @@ namespace ghbc.Net
 					queue_LogError.Enqueue ("[UDP] len_rcv < i+HeaderLen+BufferLen break");
 					return new byte[]{};
 				}
-				byte[] buf_header_words = UnitySocket.CopyToBigEndianBytes(buffer,i,HeaderLen,0,false);//DB无需转为BigEndian
+				byte[] buf_header_words = UnitySocket.CopyToBigEndianBytes(buffer,i,HeaderLen,false);//DB无需转为BigEndian
 				 
 				 queue_LogError.Enqueue ("[UDP] =====解包=======");
 				if(System.Text.Encoding.UTF8.GetString(buf_header_words) == HeadWords){ //无需转为BigEndian
@@ -83,7 +83,7 @@ namespace ghbc.Net
 						queue_LogError.Enqueue ("[UDP] break b " + len_rcv + ", "+ DB_ttsize_cmd_ret_payload +","+ i+","+ HeaderLen +","+ BufferLen);
 						return new byte[] {};
 					}
-					byte[] buf_cmd_ret_payload =  UnitySocket.CopyToBigEndianBytes(buffer,i+HeaderLen+BufferLen ,DB_ttsize_cmd_ret_payload - HeaderLen - BufferLen ,0, false);
+					byte[] buf_cmd_ret_payload =  UnitySocket.CopyToBigEndianBytes(buffer,i+HeaderLen+BufferLen ,DB_ttsize_cmd_ret_payload - HeaderLen - BufferLen , false);
 			 
 					 
 					//================================
@@ -94,7 +94,7 @@ namespace ghbc.Net
 														var ret_byte =  UnitySocket.CopyToBigEndianBytes(buf_cmd_ret_payload,CMDLen,RETLen);
 								short ret = BitConverter.ToInt16(ret_byte,0);//ReadBuffer.readUshort ();
 								//payloads由protobuffer编码而成，所以不需要转为BigEndian
-														byte[] payloads =  UnitySocket.CopyToBigEndianBytes(buf_cmd_ret_payload,CMDLen + RETLen,buf_cmd_ret_payload.Length - CMDLen - RETLen,0,false);
+														byte[] payloads =  UnitySocket.CopyToBigEndianBytes(buf_cmd_ret_payload,CMDLen + RETLen,buf_cmd_ret_payload.Length - CMDLen - RETLen,false);
 								 
 								queue_LogError.Enqueue("[UDP] <color=yellow>登陆后的处理</color>");
 
@@ -162,7 +162,7 @@ namespace ghbc.Net
 					queue_LogError.Enqueue ("[UDP] len_rcv < i+HeaderLen+BufferLen break");
 					break;
 				}
-				byte[] buf_header_words = UnitySocket.CopyToBigEndianBytes(buffer,i,HeaderLen,0,false);//DB无需转为BigEndian
+				byte[] buf_header_words = UnitySocket.CopyToBigEndianBytes(buffer,i,HeaderLen,false);//DB无需转为BigEndian
 				 
 				 queue_LogError.Enqueue ("[UDP] =====解包=======");
 				if(System.Text.Encoding.UTF8.GetString(buf_header_words) == HeadWords){ //无需转为BigEndian
@@ -179,7 +179,7 @@ namespace ghbc.Net
 						// PR("[UDP] break b " , len_rcv, totoal_msg_len , i, HeaderLen , BufferLen)
 						break;
 					}
-					byte[] buf_cmd_ret_payload =  UnitySocket.CopyToBigEndianBytes(buffer,i+HeaderLen+BufferLen ,DB_ttsize_cmd_ret_payload - HeaderLen - BufferLen ,0, false);
+					byte[] buf_cmd_ret_payload =  UnitySocket.CopyToBigEndianBytes(buffer,i+HeaderLen+BufferLen ,DB_ttsize_cmd_ret_payload - HeaderLen - BufferLen , false);
 			 
 					 
 					//================================
@@ -190,7 +190,7 @@ namespace ghbc.Net
 														var ret_byte =  UnitySocket.CopyToBigEndianBytes(buf_cmd_ret_payload,CMDLen,RETLen);
 								short ret = BitConverter.ToInt16(ret_byte,0);//ReadBuffer.readUshort ();
 								//payloads由protobuffer编码而成，所以不需要转为BigEndian
-														byte[] payloads =  UnitySocket.CopyToBigEndianBytes(buf_cmd_ret_payload,CMDLen + RETLen,buf_cmd_ret_payload.Length - CMDLen - RETLen,0,false);
+														byte[] payloads =  UnitySocket.CopyToBigEndianBytes(buf_cmd_ret_payload,CMDLen + RETLen,buf_cmd_ret_payload.Length - CMDLen - RETLen,false);
 								 
 								queue_LogError.Enqueue("[UDP] <color=yellow>登陆后的处理</color>");
 
@@ -994,7 +994,7 @@ namespace ghbc.Net
 		//		public int _msgsize = 0;
 		//		public int opcode = 0;
 		//		private int headIndex = 0;
-		private int copy_to_index = 0;
+		private int copy_from_index = 0;
 		/// <summary>
 		/// 回调函数，处理服务端返回之SOCKET通信消息
 		/// </summary>
@@ -1034,14 +1034,14 @@ namespace ghbc.Net
 					//改成如下
 					// byte[] real = CombineBuffer.CombinedBuff;
 						// byte[] real = this.buffer;
-						byte[] real = UnitySocket.CopyToBigEndianBytes(this.buffer,0,bytesReadLen,copy_to_index,false);
+						byte[] real = UnitySocket.CopyToBigEndianBytes(this.buffer,copy_from_index,bytesReadLen,false);
 					//粘包处理
 					// if (OnSocketDataArrival != null) {
 					// 	OnSocketDataArrival (real);
 					// }
 					if (OnSocketDataArrival != null) {
 						real = OnSocketDataArrival (real);
-						copy_to_index = real.Length;
+						copy_from_index = real.Length;
 					}
 
 
